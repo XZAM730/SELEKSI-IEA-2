@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seleksi IEA 2</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #0a0f2c, #000);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* === ANIMASI BINTANG === */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(1px 1px at 20% 30%, #fff, transparent),
+                        radial-gradient(1px 1px at 70% 80%, #fff, transparent),
+                        radial-gradient(1px 1px at 40% 60%, #fff, transparent);
+      animation: stars 20s linear infinite;
+      z-index: -1;
+    }
+    @keyframes stars {
+      from { transform: translateY(0); }
+      to { transform: translateY(-200px); }
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 80px auto;
+      padding: 30px;
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      box-shadow: 0 0 40px rgba(0,150,255,0.3);
+      animation: fadeIn 1.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+      font-size: 2rem;
+      background: linear-gradient(90deg, #4facfe, #00f2fe);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.subtitle {
+      text-align: center;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-bottom: 30px;
+    }
+
+    label { display: block; margin-top: 15px; font-weight: 600; }
+    input, textarea {
+      width: 100%;
+      margin-top: 6px;
+      padding: 12px;
+      border-radius: 12px;
+      border: none;
+      outline: none;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+    }
+
+    textarea { resize: vertical; min-height: 80px; }
+
+    button {
+      width: 100%;
+      margin-top: 25px;
+      padding: 14px;
+      border: none;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #4facfe, #00f2fe);
+      color: #000;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    button:hover {
+      transform: scale(1.03);
+      box-shadow: 0 0 20px #00f2fe;
+    }
+
+    .result {
+      margin-top: 25px;
+      padding: 20px;
+      border-radius: 15px;
+      animation: fadeIn 0.8s ease;
+    }
+    .success { background: rgba(0,255,150,0.15); }
+    .warning { background: rgba(255,200,0,0.15); }
+
+    a {
+      color: #4facfe;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>SELEKSI IEA 2</h1>
+    <p class="subtitle">International Education Astronomy</p>
+
+    <label>Nama</label>
+    <input id="nama" placeholder="Nama lengkap" />
+
+    <label>Tanggal Lahir</label>
+    <input id="tgl" type="date" />
+
+    <label>Tujuan Masuk IEA</label>
+    <textarea id="tujuan"></textarea>
+
+    <label>Apa itu Astronomi menurut kamu?</label>
+    <textarea id="astro"></textarea>
+
+    <label>Jawaban Lainnya (bebas)</label>
+    <textarea id="lain"></textarea>
+
+    <button onclick="cekUmur()">Kirim Seleksi</button>
+
+    <div id="hasil"></div>
+  </div>
+
+  <script>
+    function hitungUmur(tgl) {
+      const lahir = new Date(tgl);
+      const sekarang = new Date();
+      let umur = sekarang.getFullYear() - lahir.getFullYear();
+      const m = sekarang.getMonth() - lahir.getMonth();
+      if (m < 0 || (m === 0 && sekarang.getDate() < lahir.getDate())) umur--;
+      return umur;
+    }
+
+    function cekUmur() {
+      const tgl = document.getElementById('tgl').value;
+      const hasil = document.getElementById('hasil');
+      if (!tgl) {
+        hasil.innerHTML = '<div class="result warning">Tanggal lahir wajib diisi.</div>';
+        return;
+      }
+
+      const umur = hitungUmur(tgl);
+      const link = 'https://chat.whatsapp.com/HxNu2AhjEE93lsJpYXNXqp?mode=hqrt2';
+
+      if (umur >= 14) {
+        hasil.innerHTML = `
+          <div class="result success">
+            <h3>🎉 LOLOS SELEKSI AWAL</h3>
+            <p>Umur kamu <b>${umur} tahun</b>.</p>
+            <p>✅ Silakan join grup utama IEA melalui link di bawah.</p>
+            <p>⚠️ <b>WAJIB</b> screenshot halaman ini sebagai bukti kelulusan.</p>
+            <a href="${link}" target="_blank">${link}</a>
+          </div>`;
+      } else {
+        hasil.innerHTML = `
+          <div class="result warning">
+            <h3>⏳ BELUM MEMENUHI SYARAT UMUR</h3>
+            <p>Umur kamu <b>${umur} tahun</b>.</p>
+            <p>Kamu <b>WAJIB MAGANG</b> terlebih dahulu.</p>
+            <p>Silakan join grup seleksi/magang IEA:</p>
+            <a href="${link}" target="_blank">${link}</a>
+          </div>`;
+      }
+    }
+  </script>
+</body>
+</html>
